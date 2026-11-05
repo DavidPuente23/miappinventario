@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-4">Registro de Nuevo Activo</h2>
+
+<div class="card">
+    <div class="card-body">
+        <form action="/nuevo_registro" method="POST">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-muted fw-bold">Denominación del Equipo</label>
+                    <input type="text" class="form-control" name="denominacion" required placeholder="Ej. Servidor Dell PowerEdge">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-muted fw-bold">Clasificación</label>
+                    <select class="form-select" name="clasificacion">
+                        <option value="Maquinaria">Maquinaria</option>
+                        <option value="Cómputo">Cómputo</option>
+                        <option value="Mobiliario">Mobiliario</option>
+                        <option value="Vehículos">Vehículos</option>
+                        <option value="Otros">Otros</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label text-muted fw-bold">Existencia Inicial</label>
+                    <input type="number" class="form-control" name="existencia" value="1" min="1" required>
+                </div>
+                <div class="col-md-5 mb-3">
+                    <label class="form-label text-muted fw-bold">Área Asignada</label>
+                    <input type="text" class="form-control" name="area_asignada" required placeholder="Ej. Site Principal">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label text-muted fw-bold">Condición Actual</label>
+                    <select class="form-select" name="condicion_actual">
+                        <option value="Operativo">Operativo</option>
+                        <option value="Asignado">Asignado</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-muted fw-bold">Empresa Suministradora</label>
+                    <input type="text" class="form-control" name="suministrador" placeholder="Nombre del proveedor">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-muted fw-bold">Fecha de Adquisición</label>
+                    <input type="date" class="form-control" name="fecha_adquisicion" required>
+                </div>
+                <div class="col-12 mb-3">
+                    <label class="form-label text-muted fw-bold">Notas Adicionales</label>
+                    <textarea class="form-control" name="notas_adicionales" rows="3" placeholder="Especificaciones técnicas, número de serie, etc..."></textarea>
+                </div>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-end">
+                <a href="/catalogo" class="btn btn-light me-2 border">Cancelar</a>
+                <button type="submit" class="btn btn-success"><i class="fas fa-check-circle"></i> Finalizar Registro</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

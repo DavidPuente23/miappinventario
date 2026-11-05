@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<h2 class="mb-4">Control de Entradas y Salidas</h2>
+
+<div class="card border-top border-info border-4 shadow-sm">
+    <div class="card-body">
+        <form action="/movimientos" method="POST">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-muted fw-bold"><i class="fas fa-box-open"></i> Seleccionar Equipo</label>
+                    
+                    <select class="form-select" name="equipo_id" id="buscadorSelect" required>
+                        <option value="" disabled selected>Elige o busca un equipo...</option>
+                        {% for eq in equipos %}
+                            <option value="{{ eq.equipo_id }}">{{ eq.denominacion }} (Stock: {{ eq.existencia }} | Estatus: {{ eq.condicion_actual }})</option>
+                        {% endfor %}
+                    </select>
+                    
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-muted fw-bold"><i class="fas fa-exchange-alt"></i> Tipo de Movimiento</label>
+                    <select class="form-select bg-light" name="tipo_operacion" required>
+                        <option value="Ingreso">Entrada (➕ Sumar al stock)</option>
+                        <option value="Egreso">Salida (➖ Restar al stock)</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label text-muted fw-bold">Cantidad</label>
+                    <input type="number" class="form-control" name="cantidad" min="1" required placeholder="Ej. 2">
+                </div>
+                <div class="col-md-9 mb-3">
+                    <label class="form-label text-muted fw-bold">Operador / Responsable</label>
+                    <input type="text" class="form-control" name="operador" required placeholder="Nombre de quien entrega o recibe el material">
+                </div>
+                <div class="col-12 mb-3">
+                    <label class="form-label text-muted fw-bold">Justificación / Proyecto</label>
+                    <textarea class="form-control" name="justificacion" rows="2" required placeholder="Ej. Material solicitado para la Obra Norte, Devolución de préstamo temporal..."></textarea>
+                </div>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-end">
+                <a href="/catalogo" class="btn btn-light me-2 border">Cancelar</a>
+                <button type="submit" class="btn btn-info text-white"><i class="fas fa-save"></i> Registrar Transacción</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#buscadorSelect').select2({
+            placeholder: "🔍 Escribe para buscar un equipo...",
+            width: '100%',
+            language: {
+                noResults: function() {
+                    return "No se encontró ningún equipo";
+                }
+            }
+        });
+    });
+</script>
+
+<style>
+    .select2-container .select2-selection--single {
+        height: 38px !important;
+        border: 1px solid #dee2e6 !important;
+        border-radius: 0.375rem !important;
+        padding: 4px !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 36px !important;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-4">Resumen Operativo</h2>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card bg-success text-white h-100 shadow-sm">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="card-title">Equipos Activos</h5>
+                    <h2 class="mb-0">{{ total }}</h2>
+                </div>
+                <i class="fas fa-boxes fa-3x opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card bg-warning text-dark h-100 shadow-sm">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="card-title">Equipos en Taller</h5>
+                    <h2 class="mb-0">{{ reparacion }}</h2>
+                </div>
+                <i class="fas fa-cogs fa-3x opacity-50"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="row mb-4">
+    <div class="col-md-5">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title text-muted mb-3"><i class="fas fa-chart-pie text-success"></i> Activos por Clasificación</h5>
+                <canvas id="graficaClasificacion"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title text-muted mb-3"><i class="fas fa-chart-line text-primary"></i> Movimientos Recientes (Stock)</h5>
+                <canvas id="graficaMovimientos"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-white border-0 pt-4 pb-0">
+        <h5 class="card-title text-danger"><i class="fas fa-bell"></i> Próximos Servicios Técnicos</h5>
+    </div>
+    <div class="card-body table-responsive">
+        <table class="table table-borderless table-hover align-middle">
+            <thead class="border-bottom">
+                <tr>
+                    <th>Equipo / Activo</th>
+                    <th>Última Revisión</th>
+                    <th>Próxima Revisión</th>
+                    <th>Estatus</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for alerta in alertas %}
+                <tr>
+                    <td class="fw-bold">{{ alerta.denominacion }}</td>
+                    
+                    <td class="text-muted">
+                        <i class="fas fa-history"></i> {{ alerta.ultima_revision }}
+                    </td>
+                    
+                    <td class="fw-bold text-dark">
+                        <i class="far fa-calendar-check text-primary"></i> {{ alerta.fecha_siguiente_revision }}
+                    </td>
+                    
+                    <td>
+                        {% if alerta.dias_faltantes < 0 %}
+                            <span class="badge bg-danger rounded-pill">Vencido hace {{ alerta.dias_faltantes | abs }} días</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark rounded-pill">En {{ alerta.dias_faltantes }} días</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" class="text-center text-muted">Sin servicios pendientes programados.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+ 
+    const ctxClas = document.getElementById('graficaClasificacion').getContext('2d');
+    new Chart(ctxClas, {
+        type: 'doughnut',
+        data: {
+            labels: [{% for d in datos_clas %}'{{d.clasificacion}}',{% endfor %}],
+            datasets: [{
+                data: [{% for d in datos_clas %}{{d.cantidad}},{% endfor %}],
+                backgroundColor: ['#198754', '#0dcaf0', '#ffc107', '#fd7e14', '#6c757d']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { position: 'bottom' } }
+        }
+    });
+
+
+    const ctxMov = document.getElementById('graficaMovimientos').getContext('2d');
+    new Chart(ctxMov, {
+        type: 'bar',
+        data: {
+            labels: [{% for d in datos_mov %}'{{d.mes}}',{% endfor %}],
+            datasets: [{
+                label: 'Total de Operaciones',
+                data: [{% for d in datos_mov %}{{d.total}},{% endfor %}],
+                backgroundColor: '#0d6efd',
+                borderRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+</script>
+{% endblock %}

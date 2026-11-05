@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Comprobante #{{ m.transaccion_id }}</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 50px; color: #333; line-height: 1.6; }
+        .header { text-align: center; border-bottom: 3px solid #333; padding-bottom: 10px; margin-bottom: 40px; }
+        .header h1 { margin: 0; text-transform: uppercase; letter-spacing: 2px; }
+        .info-section { margin-bottom: 40px; }
+        .info-section p { font-size: 18px; margin: 12px 0; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .legal-text { text-align: justify; font-style: italic; background: #f9f9f9; padding: 20px; border-left: 5px solid #ccc; margin-top: 30px; }
+        .firmas { display: flex; justify-content: space-around; margin-top: 120px; }
+        .linea { border-top: 2px solid #000; width: 280px; text-align: center; padding-top: 10px; font-weight: bold; }
+        .btn-print { padding: 12px 25px; background: #000; color: white; border: none; cursor: pointer; font-size: 16px; border-radius: 5px; margin-bottom: 20px; font-weight: bold; }
+        @media print { .btn-print { display: none; } body { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <button class="btn-print" onclick="window.print()">🖨️ CONFIRMAR IMPRESIÓN / GUARDAR PDF</button>
+    
+    <div class="header">
+        {% if m.tipo_operacion == 'Egreso' %}
+            <h1>Vale de Resguardo de Activo</h1>
+        {% else %}
+            <h1>Constancia de Devolución de Activo</h1>
+        {% endif %}
+        <p><strong>Folio de Control:</strong> #MOV-{{ m.transaccion_id }}</p>
+    </div>
+    
+    <div class="info-section">
+        <p><strong>Fecha del Movimiento:</strong> {{ m.fecha_transaccion }}</p>
+        <p><strong>Activo / Equipo:</strong> {{ m.denominacion }} ({{ m.clasificacion }})</p>
+        <p><strong>Cantidad:</strong> {{ m.cantidad_operada }} unidad(es)</p>
+        <p><strong>Responsable:</strong> {{ m.operador }}</p>
+        <p><strong>Motivo / Justificación:</strong> {{ m.justificacion }}</p>
+    </div>
+    
+    <div class="legal-text">
+        {% if m.tipo_operacion == 'Egreso' %}
+            <p>Por medio de la presente, el responsable acepta la recepción del equipo arriba descrito en buen estado y se compromete a su custodia, uso responsable y devolución íntegra al finalizar su asignación.</p>
+        {% else %}
+            <p>Por medio de la presente, el departamento de control de activos certifica que el equipo ha sido devuelto por el responsable. Se hace constar la recepción física del activo para su reintegración al inventario disponible.</p>
+        {% endif %}
+    </div>
+    
+    <div class="firmas">
+        <div class="linea">
+            <p>{% if m.tipo_operacion == 'Egreso' %}Entrega (Almacén){% else %}Recibe (Almacén){% endif %}</p>
+        </div>
+        <div class="linea">
+            <p>{% if m.tipo_operacion == 'Egreso' %}Recibe (Responsable){% else %}Entrega (Responsable){% endif %}</p>
+        </div>
+    </div>
+
+    <div style="margin-top: 50px; text-align: center; color: #999; font-size: 12px;">
+        Documento generado por el Sistema de Control de Activos - {{ session.get('nombre') }}
+    </div>
+</body>
+</html>

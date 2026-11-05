@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+        <h2 class="mb-0 text-primary"><i class="fas fa-info-circle"></i> {{ equipo.denominacion }}</h2>
+        <span class="badge bg-secondary">{{ equipo.clasificacion }}</span>
+        <span class="text-muted ms-2">Folio: #{{ equipo.equipo_id }}</span>
+    </div>
+    <div class="text-center p-2 border bg-white rounded shadow-sm">
+        <img src="data:image/png;base64,{{ qr_code }}" width="100">
+        <div class="small text-muted mt-1 fw-bold">QR del Equipo</div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-dark text-white">Estado Actual</div>
+            <div class="card-body">
+                <p><strong>Condición:</strong> <span class="badge bg-success">{{ equipo.condicion_actual }}</span></p>
+                <p><strong>Stock:</strong> {{ equipo.existencia }} unidades</p>
+                <p><strong>Ubicación:</strong> {{ equipo.area_asignada }}</p>
+                <p><strong>Proveedor:</strong> {{ equipo.suministrador }}</p>
+                <hr>
+                <p class="small text-muted">{{ equipo.notas_adicionales }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-white fw-bold">Historial de Movimientos (Trazabilidad)</div>
+            <div class="table-responsive">
+                <table class="table table-sm table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Tipo</th>
+                            <th>Cant.</th>
+                            <th>Responsable</th>
+                            <th>Vale</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for h in historial %}
+                        <tr>
+                            <td>{{ h.fecha_transaccion.strftime('%d/%m/%Y') }}</td>
+                            <td>
+                                {% if h.tipo_operacion == 'Ingreso' %}
+                                    <span class="text-success"><i class="fas fa-arrow-down"></i> Ingreso</span>
+                                {% else %}
+                                    <span class="text-danger"><i class="fas fa-arrow-up"></i> Egreso</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ h.cantidad_operada }}</td>
+                            <td>{{ h.operador }}</td>
+                            <td>
+                                {% if h.tipo_operacion == 'Egreso' %}
+                                    <a href="/imprimir_vale/{{ h.transaccion_id }}" target="_blank" class="btn btn-sm btn-outline-danger" title="Generar Vale de Resguardo">
+                                        <i class="fas fa-file-pdf"></i> Vale
+                                    </a>
+                                {% else %}
+                                    <a href="/imprimir_vale/{{ h.transaccion_id }}" target="_blank" class="btn btn-sm btn-outline-success" title="Generar Constancia de Devolución">
+                                        <i class="fas fa-file-pdf"></i> Acta
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Catálogo General</h2>
+    <div>
+        <a href="/descargar_reporte" class="btn btn-warning shadow-sm me-2">
+            <i class="fas fa-file-excel"></i> Descargar Reporte
+        </a>
+        <a href="/nuevo_registro" class="btn btn-success shadow-sm">
+            <i class="fas fa-plus"></i> Agregar Equipo
+        </a>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <div class="input-group shadow-sm">
+            <span class="input-group-text bg-white text-primary border-end-0"><i class="fas fa-search"></i></span>
+            <input type="text" id="buscadorEquipos" class="form-control border-start-0" placeholder="Buscar por equipo, folio, área, condición...">
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body table-responsive">
+        <table class="table align-middle table-hover" id="tablaEquipos">
+            <thead class="table-light">
+                <tr>
+                    <th>Folio</th>
+                    <th>Denominación</th>
+                    <th>Clasificación</th>
+                    <th>Stock</th>
+                    <th>Área</th>
+                    <th>Condición</th>
+                    <th>Suministrador</th>
+                    <th>Próximo Servicio</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for activo in activos %}
+                <tr>
+                    <td class="text-muted">#{{ activo.equipo_id }}</td>
+                    <td class="fw-bold">
+                        <a href="/equipo/{{ activo.equipo_id }}" class="text-primary text-decoration-none"><i class="fas fa-link"></i> {{ activo.denominacion }}</a>
+                    </td>
+                    <td>{{ activo.clasificacion }}</td>
+                    <td><span class="badge bg-secondary">{{ activo.existencia }}</span></td>
+                    <td>{{ activo.area_asignada }}</td>
+                    <td>
+                        {% if activo.condicion_actual == 'Operativo' %}
+                            <span class="badge bg-success">Operativo</span>
+                        {% elif activo.condicion_actual == 'Asignado' %}
+                            <span class="badge bg-info text-dark">Asignado</span>
+                        {% elif activo.condicion_actual == 'Averiado' %}
+                            <span class="badge bg-dark">Averiado</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">{{ activo.condicion_actual }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ activo.suministrador }}</td>
+                    
+                    <td>
+                        {% if activo.proxima_revision %}
+                            <span class="badge bg-warning text-dark">
+                                <i class="far fa-calendar-alt"></i> {{ activo.proxima_revision }}
+                            </span>
+                        {% else %}
+                            <span class="text-muted small"><i>Sin programar</i></span>
+                        {% endif %}
+                    </td>
+                    
+                    <td>
+                        {% if activo.condicion_actual != 'En taller' %}
+                            <a href="/estado_taller/{{ activo.equipo_id }}" class="btn btn-sm btn-outline-warning" title="Reportar Falla / Mandar a Taller">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </a>
+                        {% else %}
+                            <a href="/estado_operativo/{{ activo.equipo_id }}" class="btn btn-sm btn-outline-success" title="Regresar a Operativo (Salida Rápida)">
+                                <i class="fas fa-check-circle"></i>
+                            </a>
+                        {% endif %}
+                        
+                        <a href="/nueva_revision/{{ activo.equipo_id }}" class="btn btn-sm btn-outline-danger" title="Registrar Mantenimiento">
+                            <i class="fas fa-tools"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+
+    document.getElementById('buscadorEquipos').addEventListener('keyup', function() {
+
+        let filtro = this.value.toLowerCase();
+
+        let filas = document.querySelectorAll('#tablaEquipos tbody tr');
+
+
+        filas.forEach(function(fila) {
+
+            let textoFila = fila.textContent.toLowerCase();
+            if (textoFila.includes(filtro)) {
+                fila.style.display = '';
+            } else {
+                fila.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock %}

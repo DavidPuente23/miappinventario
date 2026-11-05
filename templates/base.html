@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Control de Activos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        body { 
+            background-color: #f4f6f9; 
+            overflow-x: hidden; 
+        }
+        /* Estilos del Menú Lateral */
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #1a1d20;
+            padding-top: 20px;
+        }
+        .sidebar a {
+            padding: 12px 20px;
+            text-decoration: none;
+            font-size: 16px;
+            color: #adb5bd;
+            display: block;
+            transition: 0.3s;
+        }
+        .sidebar a:hover {
+            color: #fff;
+            background-color: #343a40;
+            border-left: 4px solid #198754;
+        }
+        /* Margen para que el menú no tape el contenido */
+        .content {
+            margin-left: 250px;
+            padding: 30px;
+        }
+        /* Si no hay sesión iniciada (pantalla de login), usa todo el ancho */
+        .content-full {
+            margin-left: 0;
+            padding: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    {% if session.get('logueado') %}
+    <div class="sidebar d-flex flex-column">
+        <div>
+            <h4 class="text-center mb-4 text-white"><i class="fas fa-cubes text-success"></i> Control de Activos</h4>
+            <a href="/"><i class="fas fa-chart-pie me-2"></i> Panel de Control</a>
+            <a href="/catalogo"><i class="fas fa-list-ul me-2"></i> Catálogo</a>
+            <a href="/movimientos"><i class="fas fa-exchange-alt me-2"></i> Entradas / Salidas</a>
+            <a href="/nuevo_registro"><i class="fas fa-plus-square me-2"></i> Nuevo Registro</a>
+        </div>
+        
+        <div class="mt-auto mb-4 border-top border-secondary pt-3 px-3">
+            <div class="text-white small mb-3">
+                <i class="fas fa-user-circle text-success"></i> Hola, {{ session.get('nombre') }}
+            </div>
+            <a href="/logout" class="text-danger p-0" style="background:none; border:none; text-decoration: none; display: block;">
+                <i class="fas fa-power-off me-2"></i> Cerrar Sesión
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="{% if session.get('logueado') %}content{% else %}content-full{% endif %}">
+        
+        {% with mensajes = get_flashed_messages(with_categories=true) %}
+            {% if mensajes %}
+                {% for categoria, mensaje in mensajes %}
+                    <div class="alert alert-{{ categoria }} alert-dismissible fade show shadow-sm" role="alert">
+                        {{ mensaje }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+        
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

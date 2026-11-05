@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Cuenta - Control de Activos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #f4f6f9; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .login-card { width: 100%; max-width: 450px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: none; }
+        .bg-dark-custom { background-color: #1a1d20; color: white; border-top-left-radius: 15px; border-top-right-radius: 15px; }
+    </style>
+</head>
+<body>
+    <div class="card login-card">
+        <div class="card-header bg-dark-custom text-center py-4">
+            <i class="fas fa-user-plus fa-3x text-info mb-2"></i>
+            <h4 class="mb-0">Crear Nueva Cuenta</h4>
+        </div>
+        <div class="card-body p-4">
+            {% with mensajes = get_flashed_messages(with_categories=true) %}
+                {% if mensajes %}
+                    {% for categoria, mensaje in mensajes %}
+                        <div class="alert alert-{{ categoria }} text-center py-2" role="alert"><small>{{ mensaje }}</small></div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <form action="/registro_usuario" method="POST">
+                <div class="mb-3">
+                    <label class="form-label text-muted fw-bold">Nombre Completo</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                        <input type="text" class="form-control" name="nombre_completo" required placeholder="Ej. Juan Pérez">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-muted fw-bold">Nombre de Usuario (Para iniciar sesión)</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        <input type="text" class="form-control" name="username" required placeholder="Ej. juanperez88">
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label text-muted fw-bold">Contraseña</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        <input type="password" class="form-control" name="password" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-info text-white w-100 fw-bold py-2"><i class="fas fa-check-circle"></i> Registrarse</button>
+            </form>
+            <div class="text-center mt-3">
+                <a href="/login" class="text-muted text-decoration-none small"><i class="fas fa-arrow-left"></i> Volver a Iniciar Sesión</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

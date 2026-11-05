@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Catálogo General</h2>
+    <a href="/nuevo_registro" class="btn btn-success"><i class="fas fa-plus"></i> Agregar Equipo</a>
+</div>
+
+<div class="card">
+    <div class="card-body table-responsive">
+        <table class="table align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Folio</th>
+                    <th>Denominación</th>
+                    <th>Clasificación</th>
+                    <th>Stock</th>
+                    <th>Área</th>
+                    <th>Condición</th>
+                    <th>Suministrador</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for activo in activos %}
+                <tr>
+                    <td class="text-muted">#{{ activo.equipo_id }}</td>
+                    <td class="fw-bold text-primary">{{ activo.denominacion }}</td>
+                    <td>{{ activo.clasificacion }}</td>
+                    <td><span class="badge bg-secondary">{{ activo.existencia }}</span></td>
+                    <td>{{ activo.area_asignada }}</td>
+                    <td>
+                        {% if activo.condicion_actual == 'Operativo' %}
+                            <span class="badge bg-success">Operativo</span>
+                        {% elif activo.condicion_actual == 'Asignado' %}
+                            <span class="badge bg-info text-dark">Asignado</span>
+                        {% elif activo.condicion_actual == 'Averiado' %}
+                            <span class="badge bg-dark">Averiado</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">{{ activo.condicion_actual }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ activo.suministrador }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
