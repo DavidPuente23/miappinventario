@@ -1,0 +1,11 @@
+# Base de datos y llave secreta (NO se suben a GitHub)
+instance/
+*.db
+*.key
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+.env
